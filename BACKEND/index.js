@@ -8,7 +8,7 @@ app.use(express.json());
 
 
 app.get("/prislovi", (req, res) => {
-    db.query("SELECT first_part, last_part FROM proverbs ORDER BY RAND() LIMIT 1;", (err, result) => {
+    db.query("SELECT id, first_part, last_part FROM proverbs ORDER BY RAND();", (err, result) => {
         if (err) {
             console.log(err);
             res.status(500).json({ error: 'Internal server error' });
