@@ -5,7 +5,7 @@ export default function Practice() {
     const [result, setResult] = useState(null);
     const [jsonValue, setJsonValue] = useState(0);
     const [incorrect, setIncorrect] = useState(null);
-    const [enterSubmit, setEnterSubmit] = useState(null);
+    const [inputValue, setInputValue] = useState("");
 
     useEffect(() => {
         const fetchData = async () => {
@@ -24,19 +24,17 @@ export default function Practice() {
         fetchData();
     }, []);
 
-    function handleSubmit(e) {
-        // Prevent the browser from reloading the page
-        e.preventDefault();
+    useEffect(() => {
+        setInputValue("");
+    }, [jsonValue]);
 
-        // Read the form data
+    function handleSubmit(e) {
+        e.preventDefault();
         const form = e.target;
         const formData = new FormData(form);
-
-        // Or you can work with it as a plain object:
         const formJson = Object.fromEntries(formData.entries());
         console.log(formJson);
 
-        // Answer check
         if (formJson.answer === jsonData[jsonValue].answer) {
             setResult("correct");
             setJsonValue(jsonValue + 1);
@@ -46,9 +44,11 @@ export default function Practice() {
             setIncorrect("incorrect!");
         }
 
-        console.log(jsonValue, result, incorrect)
+        setInputValue("");
 
+        console.log(jsonValue, result, incorrect)
     }
+
     return (
         <div>
             {jsonData ? (
@@ -57,18 +57,31 @@ export default function Practice() {
                         <div className='flex items-center mb-[25vh] h-[55vh] justify-center'>
                             <p className='m-[0px] mr-[10px]'>{jsonData[jsonValue].first_part}</p>
                             <label>
-                                <textarea name='answer' className="resize-none overflow-hidden" autoCapitalize="off" autoFocus="on" rows="1" autoComplete="off" autoCorrect="off" type="text" spellCheck="false" lang="cs" placeholder={jsonData[jsonValue].answer}></textarea>
+                                <input
+                                    name='answer'
+                                    className="resize-none overflow-hidden"
+                                    value={inputValue}
+                                    onChange={(e) => setInputValue(e.target.value)}
+                                    autoCapitalize="off"
+                                    autoFocus="on"
+                                    rows="1"
+                                    autoComplete="off"
+                                    autoCorrect="off"
+                                    type="text"
+                                    spellCheck="false"
+                                    lang="cs"
+                                    placeholder={jsonData[jsonValue].answer}
+                                />
                             </label>
                             <p className='m-[0px] ml-[10px]'>{jsonData[jsonValue].last_part}</p>
                             <p className=''>{incorrect}</p>
-                        </div >
-                        <button type='submit' className='text-[28px] bg-transparent border-[5px] border-red px-4 py-2 text-white hover:bg-white hover:text-black ml-[80vh] h-[50px]'>odeslat</button>
+                        </div>
+                        <button type='submit' onChange={(e) => setInputValue(e.target.value)} className='text-[28px] bg-transparent border-[5px] border-red px-4 py-2 text-white hover:bg-white hover:text-black ml-[80vh] h-[50px]'>odeslat</button>
                     </form>
                 </>
             ) : (
                 <p>Loading...</p>
-            )
-            }
-        </div >
+            )}
+        </div>
     );
 }
