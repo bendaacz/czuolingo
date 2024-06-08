@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import Next from "./next";
 
 export default function Practice() {
     const [jsonData, setJsonData] = useState(null);
@@ -20,16 +21,44 @@ export default function Practice() {
         fetchData();
     }, []);
 
+    function Correct() {
+        alert("aaaa");
+    }
+    
+    function handleSubmit(e) {
+        // Prevent the browser from reloading the page
+        e.preventDefault();
+    
+        // Read the form data
+        const form = e.target;
+        const formData = new FormData(form);
+    
+        // Or you can work with it as a plain object:
+        const formJson = Object.fromEntries(formData.entries());
+        console.log(formJson);
+
+        // Answer check
+        if (formJson.answer === jsonData[0].answer) {
+            Correct
+        } else {
+            Correct
+        }
+        
+      }
     return (
         <div>
             {jsonData ? (
                 <>
-                    <div className='flex items-center mb-[25vh] h-[55vh] justify-center'>
+                <form method='post' onSubmit={handleSubmit}>
+                    <div className='flex items-center mb-[25vh] h-[55vh] justify-center'>   
                         <p className='m-[0px] mr-[10px]'>{jsonData[0].first_part}</p>
-                        <textarea className="resize-none overflow-hidden" autoCapitalize="off" autoFocus="on" rows="1" autoComplete="off" autoCorrect="off" type="text" spellCheck="false" lang="cs" placeholder="Pište zde"></textarea>
+                        <label>
+                        <textarea name='answer' className="resize-none overflow-hidden" autoCapitalize="off" autoFocus="on" rows="1" autoComplete="off" autoCorrect="off" type="text" spellCheck="false" lang="cs" placeholder={jsonData[0].answer}></textarea>
+                        </label>
                         <p className='m-[0px] ml-[10px]'>{jsonData[0].last_part}</p>
                     </div >
-                    <button className='text-[28px] bg-transparent border-[5px] border-red px-4 py-2 text-white hover:bg-white hover:text-black ml-[80vh] h-[50px]'>odeslat</button>
+                    <button type='submit' className='text-[28px] bg-transparent border-[5px] border-red px-4 py-2 text-white hover:bg-white hover:text-black ml-[80vh] h-[50px]'>odeslat</button>
+                    </form>
                 </>
             ) : (
                 <p>Loading...</p>
