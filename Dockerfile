@@ -1,34 +1,32 @@
-FROM ubuntu:latest
+# Use the official Node.js image as a base image
+FROM node:16
 
-RUN apt update && apt-get upgrade -y
+# Create and change to the app directory
+WORKDIR /usr/src/app
 
-RUN apt install -y nodejs npm apache2 mariadb-server
+# Copy package.json and package-lock.json
+COPY package*.json ./
 
-# Copy project files to the container
-COPY . /var/www/html/
-
-# Set working directory
-WORKDIR /var/www/html/
-
-# Install project dependencies
+# Install dependencies
 RUN npm install
 
-# Build the project
+# Copy the rest of the application code
+COPY . .
+
+# Build the app for production
 RUN npm run build
 
-# Move the build output to the Apache web directory (adjust 'build' to your actual build directory)
-RUN mv /var/www/html/dist/* /var/www/html/
+# Use an official nginx image to serve the built app
+FROM nginx:alpine
 
-RUN npm run preview > /dev/null 2>&1 &
+# Copy the custom nginx configuration file
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-WORKDIR /var/www/html/BACKEND/
+# Copy the build output to the NGINX html directory
+COPY --from=0 /usr/src/app/dist /usr/share/nginx/html
 
-RUN npm install
+# Expose the port the app runs on
+EXPOSE 80
 
-RUN node index.js > /dev/null 2>&1 &
-
-RUN npm run preview > /dev/null 2>&1 &
-
-EXPOSE 5173
-EXPOSE 5174
-
+# Start nginx when the container launches
+CMD ["nginx", "-g", "daemon off;"]
