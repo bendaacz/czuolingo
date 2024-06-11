@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import "./index.css";
 
 export default function Practice() {
     const [jsonData, setJsonData] = useState(null);
@@ -50,37 +51,53 @@ export default function Practice() {
     }
 
     return (
-        <div>
+        <div className="h-[100vh] overflow-hidden">
             {jsonData ? (
-                <>
-                    <form method='post' onSubmit={handleSubmit}>
-                        <div className='flex items-center mb-[25vh] h-[55vh] justify-center'>
-                            <p className='m-[0px] mr-[10px]'>{jsonData[jsonValue].first_part}</p>
+                <form method='post' onSubmit={handleSubmit}>
+                    <div className="text-[30px]">
+                        <div className='mt-[40vh] flex justify-center'>
+                            <p className='m-[0px]'>{jsonData[jsonValue].first_part}</p>
                             <label>
                                 <input
                                     name='answer'
-                                    className="resize-none overflow-hidden"
+                                    className="ml-[8px] mr-[8px] w-[130px] border-b-5 outline-none border-[#bcd3dd] bg-[#D8F1FF] border-b-[2px] resize-none overflow-hidden"
                                     value={inputValue}
                                     onChange={(e) => setInputValue(e.target.value)}
                                     autoCapitalize="off"
                                     autoFocus="on"
                                     rows="1"
-                                    autoComplete="off"
-                                    autoCorrect="off"
                                     type="text"
                                     spellCheck="false"
+                                    autoCorrect="off"
+                                    autoComplete="off"
                                     lang="cs"
                                     placeholder={jsonData[jsonValue].answer}
                                 />
                             </label>
-                            <p className='m-[0px] ml-[10px]'>{jsonData[jsonValue].last_part}</p>
-                            <p className=''>{incorrect}</p>
+                            <p className=''>{jsonData[jsonValue].last_part}</p>
                         </div>
-                        <button type='submit' onChange={(e) => setInputValue(e.target.value)} className='text-[28px] bg-transparent border-[5px] border-red px-4 py-2 text-white hover:bg-white hover:text-black ml-[80vh] h-[50px]'>odeslat</button>
-                    </form>
-                </>
+                        <p className="text-[#ff0000]">{incorrect}</p>
+                        <div className='w-full mt-[10vh] flex justify-center'>
+                            <button type='submit' onChange={(e) => setInputValue(e.target.value)} className='hover:font-bold hover:text-[#00a2ff67]'>odeslat</button>
+                        </div>
+                    </div>
+                </form>
+
             ) : (
-                <p>Loading...</p>
+                <div>
+                    <div className=' text-[20px] flex justify-center mt-[25vh]'>
+                        <p>Loading...</p>
+                    </div>
+                    <div className=' text-[20px] flex justify-center mt-[5vh]'>
+                        <p>Načítání...</p>
+                    </div>
+                    <div className=' text-[20px] flex justify-center mt-[5vh]'>
+                        <p>Loading...</p>
+                    </div>
+                    <div className=' text-[20px] flex justify-center mt-[5vh]'>
+                        <p>Načítání...</p>
+                    </div>
+                </div>
             )}
         </div>
     );
