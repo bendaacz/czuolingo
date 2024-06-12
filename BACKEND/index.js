@@ -6,9 +6,23 @@ const PORT = 5174;
 app.use(cors());
 app.use(express.json());
 
-app.get("/prislovi", (req, res) => {
+app.get("/api/prislovi", (req, res) => {
   db.query(
     "SELECT id, first_part, last_part, answer FROM proverbs ORDER BY RAND();",
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res.status(500).json({ error: "Internal server error" });
+      } else {
+        res.json(result);
+      }
+    }
+  );
+});
+
+app.get("/api/prislovi_id", (req, res) => {
+  db.query(
+    "SELECT id FROM proverbs WHERE id=(SELECT max(id) FROM proverbs);",
     (err, result) => {
       if (err) {
         console.log(err);
