@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import "./index.css";
 import ProgressBar from "@ramonak/react-progress-bar";
 
@@ -9,7 +9,7 @@ export default function Practice() {
     const [jsonValue, setJsonValue] = useState(0);
     const [incorrect, setIncorrect] = useState(null);
     const [inputValue, setInputValue] = useState("");
-    const [questionsCompleted, setQuestionsCompleted] = useState(false); // New state to track if questions are completed
+    const [questionsCompleted, setQuestionsCompleted] = useState(false);
 
     useEffect(() => {
         const fetchPrislovi = async () => {
@@ -57,7 +57,7 @@ export default function Practice() {
             setJsonValue(jsonValue + 1);
             setIncorrect(null);
             if (jsonValue + 1 >= jsonData.length) {
-                setQuestionsCompleted(true); // If all questions are completed, set questionsCompleted to true
+                setQuestionsCompleted(true);
             }
         } else {
             setResult("incorrect");
