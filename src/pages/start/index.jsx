@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./index.css"
 import { Link } from "react-router-dom";
+import Loading from "../loading/index.jsx";
 
 export default function Start() {
     const [show, setShow] = useState(false);
@@ -12,20 +13,19 @@ export default function Start() {
         <>
             {show && (<Main />)}
             {!show && (
-                <div className="select-none h-screen">
-                    <div className="">
-                        <div className="p-[1.5vh] h-[9.1vh] justify-between inline-block px-[20vh] fixed top-0 left-0 right-0">
-                            <div className="flex w-full justify-between items-center">
-                                <div className="flex text-[38px] justify-between w-[55vh]">
-                                </div>
+                <div className="select-none">
+                    <div className="h-[9.1vh] justify-between inline-block fixed top-0 left-0 right-0">
+                        <div className="flex w-full justify-between items-center">
+                            <div className="flex text-[38px] justify-between w-[55vh]">
                             </div>
                         </div>
-                        <div className="flex">
-                            <h2 className="text-[15vw] mt-[9.1vh] inline-block text-[#F1FAFF]">asdfghjkl</h2>
-                            <p className="w-[32vw] mt-[9.1vh] text-[2.8vw] p-[1vw] flex text-center items-center border-black border-t-[1px] border-l-[1px] border-b-[1px] break-words">Učte se Český jazyk a všechny jeho nástrahy s jednou aplikací a 5 minutami denně.</p>
-
-                        </div>
-                        <button className="w-[67.9945vw] text-[70px] border-black border-[1px] inline-block justify-end" onClick={showClick}>začít!</button>
+                    </div>
+                    <div className="flex items-center text-center">
+                        <h2 className="w-[68vw] mt-[9.1vh] inline-block text-[10vw]"></h2>
+                        <p className="w-[32vw] mt-[9.1vh] text-[2.8vw] p-[1vw] flex text-center items-center border-black border-t-[1px] border-l-[1px] border-b-[1px] break-words">Učte se Český jazyk a všechny jeho nástrahy s jednou aplikací a 5 minutami denně.</p>
+                    </div>
+                    <div className="flex justify-end items-end">
+                        <button className="text-[70px] w-[32vw] text-[#00a2ff] border-black border-l-[1px] border-b-[1px] inline-block justify-end" onClick={showClick}>začít!</button>
                     </div>
                 </div>
             )}
@@ -34,9 +34,21 @@ export default function Start() {
 }
 
 export function Main() {
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 1);
+    }, []);
+
+    if (isLoading) {
+        return <Loading />
+    }
+
     return (
         <div className="h-[190vh]">
-            <div className=""> {/* add different bg color maybe. */}
+            <div className="animate-fade-in">
                 <div className="border-black border-b-[1px] p-[1.5vh] h-[9.1vh] justify-between inline-block px-[20vh] fixed top-0 left-0 right-0">
                     <div className="flex w-full justify-between items-center">
                         <div className="flex text-[38px] justify-between w-[55vh]">
