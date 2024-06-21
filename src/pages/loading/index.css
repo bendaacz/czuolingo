@@ -1,0 +1,26 @@
+.load {
+    width: 100%;
+    height: 100vh;
+    background-color: #F1FAFF;
+    position: relative;
+    overflow: hidden;
+}
+
+.load::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: #24b2ff;
+    transform: scaleX(0);
+    transform-origin: left;
+    animation: fill 3s forwards;
+}
+
+@keyframes fill {
+    to {
+        transform: scaleX(1);
+    }
+}
