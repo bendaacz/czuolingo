@@ -135,7 +135,79 @@ export default function Practice() {
 }
 
 function Overview() {
+    const [jsonData, setJsonData] = useState(null);
+    const [lastID, setLastID] = useState("");
+    const [result, setResult] = useState(null);
+    const [jsonValue, setJsonValue] = useState(0);
+    const [incorrect, setIncorrect] = useState(null);
+    const [inputValue, setInputValue] = useState("");
+    const [questionsCompleted, setQuestionsCompleted] = useState(false);
+
+    useEffect(() => {
+        const fetchPrislovi = async () => {
+            try {
+                const response = await fetch('http://localhost:5174/api/prislovi');
+                if (!response.ok) {
+                    throw new Error('Odezva serveru nebyla OK.');
+                }
+                const data = await response.json();
+                setJsonData(data);
+            } catch (error) {
+                console.error('Problém při stahování dat:', error);
+            }
+        };
+
+        const fetchPrisloviID = async () => {
+            try {
+                const response = await fetch('http://localhost:5174/api/prislovi_id');
+                if (!response.ok) {
+                    throw new Error('Odezva serveru nebyla OK.');
+                }
+                const data = await response.json();
+                setLastID(data[0].id);
+            } catch (error) {
+                console.error('Problém při stahování dat:', error);
+            }
+        };
+
+        fetchPrislovi();
+        fetchPrisloviID();
+    }, []);
+
+    useEffect(() => {
+        setInputValue("");
+    }, [jsonValue]);
+
+    function handleSubmit(e) {
+        e.preventDefault();
+        const form = e.target;
+        const formData = new FormData(form);
+        const formJson = Object.fromEntries(formData.entries());
+
+        if (formJson.answer === jsonData[jsonValue].answer) {
+            setResult("correct");
+            setJsonValue(jsonValue + 1);
+            setIncorrect(null);
+            if (jsonValue + 1 >= jsonData.length) {
+                setQuestionsCompleted(true);
+            }
+        } else {
+            setResult("incorrect");
+            setIncorrect("incorrect!");
+        }
+
+        setInputValue("");
+
+        console.log("jsonValue, result, incorrect, lastID");
+        console.log(jsonValue, result, incorrect, lastID);
+    }
+
     return (
-        <p>done</p>
+        <>
+            <h1>Hotovo!</h1>
+            <p>statistika</p>
+            <div className=''>{lastID} otázek</div>
+            <div className=''>...</div>
+        </>
     );
 }
