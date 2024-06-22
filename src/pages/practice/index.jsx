@@ -150,11 +150,13 @@ function Overview({ pause, minutes, seconds, jsonValue, lastID }) {
 
     return (
         <>
-            <h1>Hotovo!</h1>
-            <p>statistika</p>
-            <div className=''>{lastID} otázek</div>
-            <div className=''>...</div>
+            <h1 className='text-[6vw]'>Hotovo!</h1>
+            <div className='flex justify-center h-screen w-screen overflow-hidden'>
+                <div className='mt-[3vw] p-[5vw] flex w-[50vw] h-[70vh] justify-around items-end'>
+                    <div className='text-[2vw] text-center'>{lastID} otázek</div>
                     <div className='text-center text-[2vw]'>čas {minutes}:{seconds}</div>
+                </div>
+            </div>
         </>
     );
 }
