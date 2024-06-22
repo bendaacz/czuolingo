@@ -4,7 +4,7 @@ import ProgressBar from "@ramonak/react-progress-bar";
 import { useStopwatch } from 'react-timer-hook';
 
 export default function Practice() {
-    const [jsonData, setJsonData] = useState(null);
+    const [prislovi, setPrislovi] = useState(null);
     const [lastID, setLastID] = useState("");
     const [result, setResult] = useState(null);
     const [jsonValue, setJsonValue] = useState(0);
@@ -21,7 +21,7 @@ export default function Practice() {
                     throw new Error('Odezva serveru nebyla OK.');
                 }
                 const data = await response.json();
-                setJsonData(data);
+                setPrislovi(data);
             } catch (error) {
                 console.error('Problém při stahování dat:', error);
             }
@@ -54,11 +54,11 @@ export default function Practice() {
         const formData = new FormData(form);
         const formJson = Object.fromEntries(formData.entries());
 
-        if (formJson.answer === jsonData[jsonValue].answer) {
+        if (formJson.answer === prislovi[jsonValue].answer) {
             setResult("correct");
             setJsonValue(jsonValue + 1);
             setIncorrect(null);
-            if (jsonValue + 1 >= jsonData.length) {
+            if (jsonValue + 1 >= prislovi.length) {
                 setQuestionsCompleted(true);
             }
         } else {
@@ -75,8 +75,8 @@ export default function Practice() {
     return (
         <div className="h-[100vh] overflow-hidden">
             {questionsCompleted ? (
-            ) : jsonData ? (
                 <Overview pause={stopwatch.pause} minutes={stopwatch.minutes} seconds={stopwatch.seconds} jsonValue={jsonValue} lastID={lastID} />
+            ) : prislovi ? (
                 <form method='post' onSubmit={handleSubmit}>
                     <div className="text-[40px]">
                         <ProgressBar
@@ -88,7 +88,7 @@ export default function Practice() {
                             customLabel=""
                         />
                         <div className='mt-[40vh] flex justify-center'>
-                            <p className='m-[0px]'>{jsonData[jsonValue].first_part}</p>
+                            <p className='m-[0px]'>{prislovi[jsonValue].first_part}</p>
                             <label>
                                 <input
                                     name='answer'
@@ -103,10 +103,10 @@ export default function Practice() {
                                     autoCorrect="off"
                                     autoComplete="off"
                                     lang="cs"
-                                    placeholder={jsonData[jsonValue].answer}
+                                    placeholder={prislovi[jsonValue].answer}
                                 />
                             </label>
-                            <p className=''>{jsonData[jsonValue].last_part}</p>
+                            <p className=''>{prislovi[jsonValue].last_part}</p>
                         </div>
                         <div className='w-full mt-[10vh] flex justify-center'>
                             <button type='submit' onChange={(e) => setInputValue(e.target.value)} className='hover:font-bold'>odeslat</button>
