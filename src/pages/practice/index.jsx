@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import "./index.css";
 import ProgressBar from "@ramonak/react-progress-bar";
+import { useStopwatch } from 'react-timer-hook';
 
 export default function Practice() {
     const [jsonData, setJsonData] = useState(null);
@@ -10,6 +11,7 @@ export default function Practice() {
     const [incorrect, setIncorrect] = useState(null);
     const [inputValue, setInputValue] = useState("");
     const [questionsCompleted, setQuestionsCompleted] = useState(false);
+    const stopwatch = useStopwatch({ autoStart: true });
 
     useEffect(() => {
         const fetchPrislovi = async () => {
@@ -73,8 +75,8 @@ export default function Practice() {
     return (
         <div className="h-[100vh] overflow-hidden">
             {questionsCompleted ? (
-                <Overview />
             ) : jsonData ? (
+                <Overview pause={stopwatch.pause} minutes={stopwatch.minutes} seconds={stopwatch.seconds} jsonValue={jsonValue} lastID={lastID} />
                 <form method='post' onSubmit={handleSubmit}>
                     <div className="text-[40px]">
                         <ProgressBar
@@ -134,73 +136,14 @@ export default function Practice() {
     );
 }
 
-function Overview() {
-    const [jsonData, setJsonData] = useState(null);
-    const [lastID, setLastID] = useState("");
-    const [result, setResult] = useState(null);
-    const [jsonValue, setJsonValue] = useState(0);
-    const [incorrect, setIncorrect] = useState(null);
-    const [inputValue, setInputValue] = useState("");
-    const [questionsCompleted, setQuestionsCompleted] = useState(false);
+
+function Overview({ pause, minutes, seconds, jsonValue, lastID }) {
 
     useEffect(() => {
-        const fetchPrislovi = async () => {
-            try {
-                const response = await fetch('http://localhost:5174/api/prislovi');
-                if (!response.ok) {
-                    throw new Error('Odezva serveru nebyla OK.');
-                }
-                const data = await response.json();
-                setJsonData(data);
-            } catch (error) {
-                console.error('Problém při stahování dat:', error);
-            }
-        };
-
-        const fetchPrisloviID = async () => {
-            try {
-                const response = await fetch('http://localhost:5174/api/prislovi_id');
-                if (!response.ok) {
-                    throw new Error('Odezva serveru nebyla OK.');
-                }
-                const data = await response.json();
-                setLastID(data[0].id);
-            } catch (error) {
-                console.error('Problém při stahování dat:', error);
-            }
-        };
-
-        fetchPrislovi();
-        fetchPrisloviID();
-    }, []);
-
-    useEffect(() => {
-        setInputValue("");
-    }, [jsonValue]);
-
-    function handleSubmit(e) {
-        e.preventDefault();
-        const form = e.target;
-        const formData = new FormData(form);
-        const formJson = Object.fromEntries(formData.entries());
-
-        if (formJson.answer === jsonData[jsonValue].answer) {
-            setResult("correct");
-            setJsonValue(jsonValue + 1);
-            setIncorrect(null);
-            if (jsonValue + 1 >= jsonData.length) {
-                setQuestionsCompleted(true);
-            }
-        } else {
-            setResult("incorrect");
-            setIncorrect("incorrect!");
+        if (jsonValue === lastID) {
+            pause()
         }
-
-        setInputValue("");
-
-        console.log("jsonValue, result, incorrect, lastID");
-        console.log(jsonValue, result, incorrect, lastID);
-    }
+    }, [jsonValue, lastID, pause]);
 
     return (
         <>
@@ -208,6 +151,7 @@ function Overview() {
             <p>statistika</p>
             <div className=''>{lastID} otázek</div>
             <div className=''>...</div>
+                    <div className='text-center text-[2vw]'>čas {minutes}:{seconds}</div>
         </>
     );
 }
