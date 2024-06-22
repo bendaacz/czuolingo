@@ -78,15 +78,18 @@ export default function Practice() {
                 <Overview pause={stopwatch.pause} minutes={stopwatch.minutes} seconds={stopwatch.seconds} jsonValue={jsonValue} lastID={lastID} />
             ) : prislovi ? (
                 <form method='post' onSubmit={handleSubmit}>
+                    <ProgressBar
+                        borderRadius='0px'
+                        completed={jsonValue}
+                        bgColor="#09a9ff"
+                        labelAlignment="outside"
+                        labelColor="#09a9ff"
+                        maxCompleted={lastID}
+                        customLabel=""
+                        isLabelVisible="false"
+                    />
                     <div className="text-[40px]">
-                        <ProgressBar
-                            completed={jsonValue}
-                            bgColor="#09a9ff"
-                            labelAlignment="outside"
-                            labelColor="#09a9ff"
-                            maxCompleted={lastID}
-                            customLabel=""
-                        />
+
                         <div className='mt-[40vh] flex justify-center'>
                             <p className='m-[0px]'>{prislovi[jsonValue].first_part}</p>
                             <label>
