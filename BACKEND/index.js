@@ -34,6 +34,19 @@ app.get("/api/prislovi_id", (req, res) => {
   );
 });
 
+app.get("/api/hash/:hash", (req, res) => {
+  require('dotenv').config();
+  const crypto = require('crypto');
+  const secret = (process.env.HASH);
+  const update = (req.params.hash)
+  const hash = crypto.createHash('sha256', secret)
+    .update(update)
+    .digest('hex');
+
+  res.json({ hash });
+});
+
+
 app.listen(PORT, () => {
   console.log(`bezim na ${PORT}`);
 });
