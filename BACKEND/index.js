@@ -6,9 +6,9 @@ const PORT = 5174;
 app.use(cors());
 app.use(express.json());
 
-app.get("/api/prislovi", (req, res) => {
+app.get("/api/prislovi1", (req, res) => {
   db.query(
-    "SELECT id, first_part, last_part, answer FROM proverbs ORDER BY RAND();",
+    "SELECT id, first_part, last_part, answer FROM prislovi1 ORDER BY RAND();",
     (err, result) => {
       if (err) {
         console.log(err);
@@ -20,9 +20,9 @@ app.get("/api/prislovi", (req, res) => {
   );
 });
 
-app.get("/api/prislovi_id", (req, res) => {
+app.get("/api/prislovi1_id", (req, res) => {
   db.query(
-    "SELECT id FROM proverbs WHERE id=(SELECT max(id) FROM proverbs);",
+    "SELECT id FROM prislovi1 WHERE id=(SELECT max(id) FROM prislovi1);",
     (err, result) => {
       if (err) {
         console.log(err);
