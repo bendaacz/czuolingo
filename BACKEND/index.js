@@ -42,9 +42,24 @@ app.get("/api/hash/:hash", (req, res) => {
   const hash = crypto.createHash('sha256', secret)
     .update(update)
     .digest('hex');
-
   res.json({ hash });
 });
+
+app.post("/login", (req, res) => {
+  const { username, hash } = req.body;
+  const loginQuery = "SELECT * FROM users WHERE username = ? AND hash = ?"
+  db.query(loginQuery, [username, hash], (err, result) => {
+    if (err) {
+      res.status(500).json({ message: 'An error occurred while processing your request.' });
+    } else {
+      if (result.length > 0) {
+        res.status(200).json({ message: 'Login successful' });
+      } else {
+        res.status(401).json({ message: 'Login failed. Invalid username or password.' });
+      }
+    }
+  });
+})
 
 
 app.listen(PORT, () => {
