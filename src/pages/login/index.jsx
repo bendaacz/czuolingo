@@ -1,5 +1,5 @@
 import { useCookies } from 'react-cookie';
-import { useState, navigate } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
 export default function LogIn() {
@@ -7,6 +7,7 @@ export default function LogIn() {
     const [password, setPassword] = useState("");
     const [cookies, setCookie] = useCookies(['user']);
     const [hash, setHash] = useState(null);
+    const [loginError, setLoginError] = useState(null);
 
     const getHash = async (password) => {
         try {
@@ -15,7 +16,6 @@ export default function LogIn() {
                 throw new Error('Odezva serveru nebyla OK.');
             }
             const data = await response.json();
-            setHash(data.hash);
             return data.hash;
         } catch (error) {
             console.error('Problém při stahování dat:', error);
@@ -24,27 +24,39 @@ export default function LogIn() {
     };
 
     const onClick = async () => {
-        handleUsername()
-        handleHash()
-        checkCredentials()
-    }
-
-    const checkCredentials = async () => {
-        const response = await axios.post('http://localhost:5174/login', { username, hash });
-        if (response.status === 200) {
-            console.log("Logged in!") // IMPLEMENT SUCCESSFUL LOGIN LOGIC HERE
+        handleUsername();
+        const hashedPassword = await handleHash();
+        if (hashedPassword) {
+            checkCredentials(hashedPassword);
         }
     }
 
+    const checkCredentials = async (hashedPassword) => {
+        try {
+            const response = await axios.post('http://localhost:5174/login', { username, hash: hashedPassword }, {
+            });
+
+            if (response.status === 200) {
+                console.log("Login successful");
+                setLoginError(null)
+                setCookie("username", username);
+                setCookie("hash", hashedPassword);
+            }
+        } catch (error) {
+            if (error.response) {
+                setLoginError("login failed, try using different username or retyping the password");
+            }
+        }
+    };
+
     const handleUsername = async () => {
-        setCookie("username", username);
+
     }
 
     const handleHash = async () => {
         const hash = await getHash(password);
-        if (hash) {
-            setCookie('password', hash, { path: '/' });
-        }
+        setHash(hash);
+        return hash;
     };
 
     return (
@@ -64,6 +76,7 @@ export default function LogIn() {
             <div>
                 <button onClick={onClick}>Set Cookie</button>
             </div>
+            <div className=''>{loginError}</div>
         </div>
     )
 }
