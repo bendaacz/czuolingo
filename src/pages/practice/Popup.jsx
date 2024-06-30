@@ -1,11 +1,10 @@
-import { useEffect, useState } from "react"
-import Popup from 'reactjs-popup';
-import PopupPreview from "./Popup";
+import { useState, useEffect } from "react";
+import Popup from "reactjs-popup";
 
-export default function Practice() {
+export default function PopupPreview({number, exerciseName}) {
     const [ExerciseList, setExerciseList] = useState(null);
-    const [RandomQuestionsPrislovi1, setRandomQuestionsPrislovi1] = useState(" ");
-    const [RandomQuestionsPrislovi2, setRandomQuestionsPrislovi2] = useState(" ");
+    const [RandomQuestions, setRandomQuestions] = useState(null);
+    const [lastID, setLastID] = useState(null);
     useEffect(() => {
         const fetchExerciseList= async()=> {
             try {
@@ -20,42 +19,52 @@ export default function Practice() {
             }
         }
 
-        const fetchRandomQuestionsPrislovi1= async()=> {
+        const fetchRandomQuestions= async()=> {
             try {
-                const response = await fetch('http://localhost:5174/api/random/prislovi1');
+                const response = await fetch('http://localhost:5174/api/random/' + exerciseName.toLowerCase());
                 if (!response.ok) {
                     throw new Error('Odezva serveru nebyla OK.');
                 }
                 const data = await response.json();
-                setRandomQuestionsPrislovi1(data);
+                setRandomQuestions(data);
+            } catch (error) {
+                console.error('Problém při stahování dat:', error);
+            }
+        }
+
+        const fetchLastID= async()=> {
+            try {
+                const response = await fetch('http://localhost:5174/api/lastid/' + exerciseName.toLowerCase());
+                if (!response.ok) {
+                    throw new Error('Odezva serveru nebyla OK.');
+                }
+                const data = await response.json();
+                setLastID(data);
             } catch (error) {
                 console.error('Problém při stahování dat:', error);
             }
         }
         
+        fetchLastID();
         fetchExerciseList();
-        fetchRandomQuestionsPrislovi1();
+        fetchRandomQuestions();
     }, []);
     return (
         <>
-        {ExerciseList === null || RandomQuestionsPrislovi1 === null || RandomQuestionsPrislovi2 === null ? (
+        {!ExerciseList || !RandomQuestions ? (
             <div></div>
         ) : (
-        <div className="h-screen w-screen py-[10vh]">
             <div className="flex justify-center text-center align-middle">
-                <div className="grid grid-cols-5">
-                <PopupPreview number="0" exerciseName="prislovi1" />
-                <PopupPreview number="1" exerciseName="prislovi2" />
-                {/*<Popup trigger={<button className="border border-black p-[1vw]">{ExerciseList[0].name}</button>} modal nested>
+                <Popup trigger={<button className="border border-black p-[1vw]">{ExerciseList[number].name}</button>} modal nested>
                 {   close => (
                         <div className='border-black w-[50vw] h-[65vh] text-[4vh] border-[1px] px-[5vw] py-[5vh]'>
                             <div className="justify-center flex text-center">
-                                výběr cvičení: {ExerciseList[0].name}
+                                výběr cvičení: {ExerciseList[number].name}
                             </div>
-                            <div className="justify-center flex text-center">počet otázek: {ExerciseList[0].questions}</div>
+                            <div className="justify-center flex text-center">počet otázek: {lastID[0].id}</div>
                             <div className="text-[3vh]">
                             <div className="mt-[5vh] justify-center flex text-center">ukázka cvičení:</div>
-                            <div className="flex justify-center text-center">{RandomQuestionsPrislovi1[0].first_part} ______ {RandomQuestionsPrislovi1[0].last_part}</div>
+                            <div className="flex justify-center text-center">{RandomQuestions[0].first_part} ______ {RandomQuestions[0].last_part}</div>
                             </div>
                             <div className="flex items-end">
                             <div className="">
@@ -65,11 +74,8 @@ export default function Practice() {
                         </div>
                     )
                 }
-            </Popup> */}
+            </Popup>
                 </div>
-            </div>
-        </div>
         )}
         </>
-    )
-}
+    ) }
