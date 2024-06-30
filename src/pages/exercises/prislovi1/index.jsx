@@ -29,7 +29,7 @@ export default function Prislovi1() {
 
         const fetchPrislovi1ID = async () => {
             try {
-                const response = await fetch('http://localhost:5174/api/prislovi1_id');
+                const response = await fetch('http://localhost:5174/api/lastid/' + "prislovi1");                {/* dočasné přísloví1, přidat promněnnou */}
                 if (!response.ok) {
                     throw new Error('Odezva serveru nebyla OK.');
                 }
