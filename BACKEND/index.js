@@ -6,9 +6,12 @@ const PORT = 5174;
 app.use(cors());
 app.use(express.json());
 
-app.get("/api/prislovi1", (req, res) => {
+app.get("/api/random/:exercise", (req, res) => {
+  const exercise = req.params.exercise;
   db.query(
-    "SELECT id, first_part, last_part, answer FROM prislovi1 ORDER BY RAND();",
+    "SELECT id, first_part, last_part, answer FROM " +
+      exercise +
+      " ORDER BY RAND();",
     (err, result) => {
       if (err) {
         console.log(err);
@@ -50,7 +53,7 @@ app.get("/api/exercises/list", (req, res) => {
   });
 });
 
-app.get("/api/random/:exercise", (req, res) => {
+app.get("/api/random3/:exercise", (req, res) => {
   const exercise = req.params.exercise;
   db.query(
     "SELECT first_part, last_part FROM " +

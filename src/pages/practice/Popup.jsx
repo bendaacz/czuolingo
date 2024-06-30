@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import Popup from "reactjs-popup";
+import { Link } from "react-router-dom";
 
 export default function PopupPreview({number, exerciseName}) {
     const [ExerciseList, setExerciseList] = useState(null);
     const [RandomQuestions, setRandomQuestions] = useState(null);
     const [lastID, setLastID] = useState(null);
+    const exerciseLink = ("/exercise/" + exerciseName)
     useEffect(() => {
         const fetchExerciseList= async()=> {
             try {
@@ -21,7 +23,7 @@ export default function PopupPreview({number, exerciseName}) {
 
         const fetchRandomQuestions= async()=> {
             try {
-                const response = await fetch('http://localhost:5174/api/random/' + exerciseName.toLowerCase());
+                const response = await fetch('http://localhost:5174/api/random3/' + exerciseName.toLowerCase());
                 if (!response.ok) {
                     throw new Error('Odezva serveru nebyla OK.');
                 }
@@ -66,10 +68,12 @@ export default function PopupPreview({number, exerciseName}) {
                             <div className="mt-[5vh] justify-center flex text-center">ukázka cvičení:</div>
                             <div className="flex justify-center text-center">{RandomQuestions[0].first_part} ______ {RandomQuestions[0].last_part}</div>
                             </div>
-                            <div className="flex items-end">
-                            <div className="">
-                                <button className="mt-[10vh]" onClick={() => close()}>zavřít</button>
+                            <div className="mt-[10vh]"></div>
+                            <div className="flex border-x-[1px] border-t-[1px] border-black justify-center text-center">
+                            <Link to={exerciseLink} className="">{ExerciseList[number].name}</Link>
                             </div>
+                            <div className="flex justify-center border-[1px] border-black">
+                                <button className="" onClick={() => close()}>zavřít</button>
                             </div>
                         </div>
                     )
