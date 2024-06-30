@@ -1,35 +1,35 @@
 import { useState, useEffect } from 'react';
 import "./index.css";
 import ProgressBar from "@ramonak/react-progress-bar";
-import { useStopwatch } from 'react-timer-hook';
+import { useStopwatch  } from 'react-timer-hook';
 
-export default function Prislovi1() {
-    const [prislovi, setPrislovi] = useState(null);
+export default function Exercise({ exerciseName }) {
+    const [exercise, setExercise] = useState(null);
     const [lastID, setLastID] = useState("");
     const [result, setResult] = useState(null);
-    const [jsonValue, setJsonValue] = useState(0);
+    const [currentValue, setCurrentValue] = useState(0);
     const [incorrect, setIncorrect] = useState(null);
     const [inputValue, setInputValue] = useState("");
     const [questionsCompleted, setQuestionsCompleted] = useState(false);
     const stopwatch = useStopwatch({ autoStart: true });
 
     useEffect(() => {
-        const fetchPrislovi1 = async () => {
+        const fetchExercise = async () => {
             try {
-                const response = await fetch('http://localhost:5174/api/prislovi1');
+                const response = await fetch('http://localhost:5174/api/random/' + exerciseName);
                 if (!response.ok) {
                     throw new Error('Odezva serveru nebyla OK.');
                 }
                 const data = await response.json();
-                setPrislovi(data);
+                setExercise(data);
             } catch (error) {
                 console.error('Problém při stahování dat:', error);
             }
         };
 
-        const fetchPrislovi1ID = async () => {
+        const fetchLastID = async () => {
             try {
-                const response = await fetch('http://localhost:5174/api/lastid/' + "prislovi1");                {/* dočasné přísloví1, přidat promněnnou */}
+                const response = await fetch('http://localhost:5174/api/lastid/' + exerciseName);
                 if (!response.ok) {
                     throw new Error('Odezva serveru nebyla OK.');
                 }
@@ -40,13 +40,13 @@ export default function Prislovi1() {
             }
         };
 
-        fetchPrislovi1();
-        fetchPrislovi1ID();
+        fetchExercise();
+        fetchLastID();
     }, []);
 
     useEffect(() => {
         setInputValue("");
-    }, [jsonValue]);
+    }, [currentValue]);
 
     function handleSubmit(e) {
         e.preventDefault();
@@ -54,11 +54,11 @@ export default function Prislovi1() {
         const formData = new FormData(form);
         const formJson = Object.fromEntries(formData.entries());
 
-        if (formJson.answer === prislovi[jsonValue].answer) {
+        if (formJson.answer === exercise[currentValue].answer) {
             setResult("correct");
-            setJsonValue(jsonValue + 1);
+            setCurrentValue(currentValue + 1);
             setIncorrect(null);
-            if (jsonValue + 1 >= prislovi.length) {
+            if (currentValue + 1 >= exercise.length) {
                 setQuestionsCompleted(true);
             }
         } else {
@@ -68,19 +68,19 @@ export default function Prislovi1() {
 
         setInputValue("");
 
-        console.log("jsonValue, result, incorrect, lastID");
-        console.log(jsonValue, result, incorrect, lastID);
+        console.log("currentValue, result, incorrect, lastID");
+        console.log(currentValue, result, incorrect, lastID);
     }
 
     return (
         <div className="h-[100vh] overflow-hidden">
             {questionsCompleted ? (
-                <Overview pause={stopwatch.pause} minutes={stopwatch.minutes} seconds={stopwatch.seconds} jsonValue={jsonValue} lastID={lastID} />
-            ) : prislovi ? (
+                <Overview pause={stopwatch.pause} minutes={stopwatch.minutes} seconds={stopwatch.seconds} currentValue={currentValue} lastID={lastID} />
+            ) : exercise ? (
                 <form method='post' onSubmit={handleSubmit}>
                     <ProgressBar
                         borderRadius='0px'
-                        completed={jsonValue}
+                        completed={currentValue}
                         bgColor="#09a9ff"
                         labelAlignment="outside"
                         labelColor="#09a9ff"
@@ -91,7 +91,7 @@ export default function Prislovi1() {
                     <div className="text-[40px]">
 
                         <div className='mt-[40vh] flex justify-center'>
-                            <p className='m-[0px]'>{prislovi[jsonValue].first_part}</p>
+                            <p className='m-[0px]'>{exercise[currentValue].first_part}</p>
                             <label>
                                 <input
                                     name='answer'
@@ -106,10 +106,10 @@ export default function Prislovi1() {
                                     autoCorrect="off"
                                     autoComplete="off"
                                     lang="cs"
-                                    placeholder={prislovi[jsonValue].answer}
+                                    placeholder={exercise[currentValue].answer}
                                 />
                             </label>
-                            <p className=''>{prislovi[jsonValue].last_part}</p>
+                            <p className=''>{exercise[currentValue].last_part}</p>
                         </div>
                         <div className='w-full mt-[10vh] flex justify-center'>
                             <button type='submit' onChange={(e) => setInputValue(e.target.value)} className='hover:font-bold'>odeslat</button>
@@ -140,13 +140,13 @@ export default function Prislovi1() {
 }
 
 
-function Overview({ pause, minutes, seconds, jsonValue, lastID }) {
+function Overview({ pause, minutes, seconds, currentValue, lastID }) {
 
     useEffect(() => {
-        if (jsonValue === lastID) {
+        if (currentValue === lastID) {
             pause()
         }
-    }, [jsonValue, lastID, pause]);
+    }, [currentValue, lastID, pause]);
 
     return (
         <>
