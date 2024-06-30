@@ -20,9 +20,14 @@ app.get("/api/prislovi1", (req, res) => {
   );
 });
 
-app.get("/api/prislovi1_id", (req, res) => {
+app.get("/api/lastid/:exercise", (req, res) => {
+  const exercise = req.params.exercise;
   db.query(
-    "SELECT id FROM prislovi1 WHERE id=(SELECT max(id) FROM prislovi1);",
+    "SELECT id FROM " +
+      exercise +
+      " WHERE id=(SELECT max(id) FROM " +
+      exercise +
+      ");",
     (err, result) => {
       if (err) {
         console.log(err);
@@ -45,9 +50,12 @@ app.get("/api/exercises/list", (req, res) => {
   });
 });
 
-app.get("/api/random/prislovi1", (req, res) => {
+app.get("/api/random/:exercise", (req, res) => {
+  const exercise = req.params.exercise;
   db.query(
-    "SELECT first_part, last_part FROM prislovi1 ORDER BY RAND() LIMIT 3;",
+    "SELECT first_part, last_part FROM " +
+      exercise +
+      " ORDER BY RAND() LIMIT 3;",
     (err, data) => {
       if (err) {
         console.log(err);
