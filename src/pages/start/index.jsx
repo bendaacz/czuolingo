@@ -51,8 +51,6 @@ export function Main() {
             <div className="animate-fade-in">
                 <div className="border-black border-b-[1px] p-[1.5vh] h-[9.1vh] justify-between inline-block px-[20vh] fixed top-0 left-0 right-0">
                     <div className="flex w-full justify-between items-center">
-                        <div className="flex text-[38px] justify-between w-[55vh]">
-                            <Link to="/practice"> {/*temp link !!!!*/}
                         <div className="flex text-[4vh] justify-between w-[55vh]">
                             <Link to="/practice">
                                 <p>učit se</p>
