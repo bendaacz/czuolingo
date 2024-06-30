@@ -53,6 +53,8 @@ export function Main() {
                     <div className="flex w-full justify-between items-center">
                         <div className="flex text-[38px] justify-between w-[55vh]">
                             <Link to="/practice"> {/*temp link !!!!*/}
+                        <div className="flex text-[4vh] justify-between w-[55vh]">
+                            <Link to="/practice">
                                 <p>učit se</p>
                             </Link>
                             <p>/</p>
