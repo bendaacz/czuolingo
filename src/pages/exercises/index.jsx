@@ -11,6 +11,7 @@ export default function Exercise({ exerciseName }) {
     const [incorrect, setIncorrect] = useState(null);
     const [inputValue, setInputValue] = useState("");
     const [questionsCompleted, setQuestionsCompleted] = useState(false);
+    const [progressBar, setProgressBar] = useState(null);
     const stopwatch = useStopwatch({ autoStart: true });
 
     useEffect(() => {
@@ -55,11 +56,16 @@ export default function Exercise({ exerciseName }) {
         const formJson = Object.fromEntries(formData.entries());
 
         if (formJson.answer === exercise[currentValue].answer) {
+            setProgressBar(currentValue + 1);
             setResult("correct");
-            setCurrentValue(currentValue + 1);
             setIncorrect(null);
+            setTimeout(() => {
+                setCurrentValue(currentValue + 1);
+            }, 750);
             if (currentValue + 1 >= exercise.length) {
+                setTimeout(() => {
                 setQuestionsCompleted(true);
+            }, 750);
             }
         } else {
             setResult("incorrect");
@@ -77,10 +83,11 @@ export default function Exercise({ exerciseName }) {
             {questionsCompleted ? (
                 <Overview pause={stopwatch.pause} minutes={stopwatch.minutes} seconds={stopwatch.seconds} currentValue={currentValue} lastID={lastID} />
             ) : exercise ? (
-                <form method='post' onSubmit={handleSubmit}>
-                    <ProgressBar
+                <>
+                <ProgressBar
+                        className="flex align-top"
                         borderRadius='0px'
-                        completed={currentValue}
+                        completed={progressBar}
                         bgColor="#09a9ff"
                         labelAlignment="outside"
                         labelColor="#09a9ff"
@@ -88,8 +95,8 @@ export default function Exercise({ exerciseName }) {
                         customLabel=""
                         isLabelVisible="false"
                     />
+                <form method='post' onSubmit={handleSubmit}>
                     <div className="text-[40px]">
-
                         <div className='mt-[40vh] flex justify-center'>
                             <p className='m-[0px]'>{exercise[currentValue].first_part}</p>
                             <label>
@@ -106,7 +113,6 @@ export default function Exercise({ exerciseName }) {
                                     autoCorrect="off"
                                     autoComplete="off"
                                     lang="cs"
-                                    placeholder={exercise[currentValue].answer}
                                 />
                             </label>
                             <p className=''>{exercise[currentValue].last_part}</p>
@@ -119,17 +125,9 @@ export default function Exercise({ exerciseName }) {
                         </div>
                     </div>
                 </form>
+                </>
             ) : (
                 <div>
-                    <div className=' text-[20px] flex justify-center mt-[25vh]'>
-                        <p>Loading...</p>
-                    </div>
-                    <div className=' text-[20px] flex justify-center mt-[5vh]'>
-                        <p>Načítání...</p>
-                    </div>
-                    <div className=' text-[20px] flex justify-center mt-[5vh]'>
-                        <p>Loading...</p>
-                    </div>
                     <div className=' text-[20px] flex justify-center mt-[5vh]'>
                         <p>Načítání...</p>
                     </div>
