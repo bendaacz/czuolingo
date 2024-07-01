@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import "./index.css"
 import { Link } from "react-router-dom";
 import Loading from "../loading/index.jsx";
+import Responsive from 'react-responsive'
 
 export default function Start() {
     const [show, setShow] = useState(false);
@@ -11,6 +12,7 @@ export default function Start() {
     }
     return (
         <>
+        <Responsive minWidth={1250}>
             {show && (<Main />)}
             {!show && (
                 <div className="select-none">
@@ -29,6 +31,12 @@ export default function Start() {
                     </div>
                 </div>
             )}
+            </Responsive>
+            <Responsive maxWidth={1250}>
+            <div className="h-screen w-screen">
+            <h1 className="flex justify-center items-center text-center align-middle">Screen too small :/</h1>
+            </div>
+            </Responsive>
         </>
     );
 }
